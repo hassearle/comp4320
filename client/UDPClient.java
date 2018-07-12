@@ -1,7 +1,9 @@
-import java.io.*; 
-import java.net.*; 
-  
-class UDPClient { 
+package client;
+
+import java.io.*;
+import java.net.*;
+
+public class UDPClient {
     public static void main(String args[]) throws Exception 
     { 
       //create input stream

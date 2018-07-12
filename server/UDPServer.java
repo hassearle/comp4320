@@ -1,4 +1,5 @@
-import java.io.*; 
+package server;
+import java.io.*;
 import java.net.*; 
   
 class UDPServer { 
