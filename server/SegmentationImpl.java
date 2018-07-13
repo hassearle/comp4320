@@ -47,16 +47,8 @@ public class SegmentationImpl implements ISegmentation {
                 //add code for out of bounds of data when copying to temp
                 temp[j] = dataNew[(i*packetSize) + j];
             }
-            packetsOut[i] = new DatagramPacket(temp, packetSize);
+            packetsOut[i] = new DatagramPacket(temp, i, packetSize);
         }
         return packetsOut;
-    }
-
-
-
-    //accepts an array of packets and reassembles them into a byte array
-    public byte[] reassemblePackets(DatagramPacket[] packets) {
-        // code here
-        return new byte[1];
     }
 }
