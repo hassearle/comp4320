@@ -14,7 +14,7 @@ public class UDPClient {
       DatagramSocket clientSocket = new DatagramSocket(); 
   
       //translate hostname to IP address USING DNS 
-      InetAddress IPAddress = InetAddress.getByName("hostname"); 
+      InetAddress IPAddress = InetAddress.getByName("tux055");
   
       byte[] sendData = new byte[1024]; 
       byte[] receiveData = new byte[1024]; 
@@ -24,7 +24,7 @@ public class UDPClient {
 
       //create datagram with data-to-send, length, IP addr, port
       DatagramPacket sendPacket = 
-         new DatagramPacket(sendData, sendData.length, IPAddress, 9876); 
+         new DatagramPacket(sendData, sendData.length, IPAddress, 10024);
   
       //send datagram to server
       clientSocket.send(sendPacket); 

@@ -6,7 +6,7 @@ class UDPServer {
   public static void main(String args[]) throws Exception 
     { 
       //create datagram socket at port 9876
-      DatagramSocket serverSocket = new DatagramSocket(9876); 
+      DatagramSocket serverSocket = new DatagramSocket(10024);
   
       byte[] receiveData = new byte[1024]; 
       byte[] sendData  = new byte[1024]; 
@@ -36,7 +36,7 @@ class UDPServer {
                                port); 
 
          //write out datagram to socket
-          serverSocket.send(sendPacket); 
+          serverSocket.send(sendPacket);
         }
         //end of while loop, loop pack and wait for another datagram 
     } 
