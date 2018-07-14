@@ -42,11 +42,13 @@ public class SegmentationImpl implements ISegmentation {
          * to each item. The inner loop assigns temp to byte arrays made up
          * all the bytes in data.
          */
+        System.out.println(temp.length);
         for(int i = 0; i < numberOfPackets; i++){
             for(int j = 0; j < packetSize; j++){
                 //add code for out of bounds of data when copying to temp
                 temp[j] = dataNew[(i*packetSize) + j];
             }
+            System.out.println("Offset: " + i + "\tSize: " + packetSize);
             packetsOut[i] = new DatagramPacket(temp, i, packetSize);
         }
         return packetsOut;

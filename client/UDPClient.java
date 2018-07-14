@@ -24,7 +24,7 @@ public class UDPClient {
   
       //send datagram to server
       clientSocket.send(sendPacket);
-
+      System.out.println("Client sent HTTP request");
       DatagramPacket receivePacket; 
       while(true) {
         receivePacket = new DatagramPacket(receiveData, receiveData.length); 
@@ -32,10 +32,9 @@ public class UDPClient {
         clientSocket.receive(receivePacket); 
         String receivedData =
             new String(receivePacket.getData());
-            if (receivedData.length != 0) {
-              System.out.println("FROM SERVER:" + receivedData);
+            if (receivedData.length() != 0) {
+              System.out.println("Packet received from server: " + receivedData);
             } 
       }
-      clientSocket.close();
     } 
 }
