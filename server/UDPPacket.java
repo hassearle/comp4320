@@ -9,6 +9,12 @@ public class UDPPacket extends DatagramPacket {
 		buf = this.includeHeaderLines(buf);
 		super(buf, buf.length, address, port);
 	}
+	public UDPPacket(byte[] buf, int length, int sequenceNumber) {
+		this.checksum = this.calculateChecksum(buf);
+		this.sequenceNumber = sequenceNumber;
+		buf = this.includeHeaderLines(buf);
+		super(buf, buf.length);
+	}
 	public int calculateChecksum(byte[] buf) {
 		int sum = 0;
 		for (byte b in buf) {
