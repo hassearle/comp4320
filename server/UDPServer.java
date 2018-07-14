@@ -37,10 +37,12 @@ public class UDPServer {
               String data = "HTTP/1.0 200 Document Follows\r\n"
                   + "Content-Type: text/plain\r\n"
                   + "Content-Length: " + sendData.length + "\r\n"
-                  + "Checksum: " + computeChecksum(sendData) + "\r\n\r\n"
                   + new String(sendData);
               DatagramPacket[] packetsToSend = segmentor.segmentPackets(data.getBytes(), 256);
               for (DatagramPacket packet : packetsToSend) {
+                System.out.println("Sending packet: " + new String(packet.getData()));
+                packet.setPort(receivePacket.getPort());
+                packet.setAddress(receivePacket.getAddress());
                 serverSocket.send(packet);
               }
               break;
@@ -62,11 +64,4 @@ public class UDPServer {
       return ret;
     }
 
-    public static int computeChecksum(byte[] data) {
-      int checksum = 0;
-      for (byte b : data) {
-        checksum += b;
-      }
-      return checksum;
-    }
 }  

@@ -4,7 +4,7 @@ public class SegmentationImpl implements ISegmentation {
     // accepts data in bytes, converts into equally sized packets
     public DatagramPacket[] segmentPackets(byte[] data, int packetSize) {
         /* Calculate the number of empty items there will be in the new array
-         * if necessary where the new array is a size that is a multiple 
+         * if necessary where the new array is a size that is a multiple
          * of packetSize
          */
         int remainingItems = 0;
@@ -42,14 +42,13 @@ public class SegmentationImpl implements ISegmentation {
          * to each item. The inner loop assigns temp to byte arrays made up
          * all the bytes in data.
          */
-        System.out.println(temp.length);
         for(int i = 0; i < numberOfPackets; i++){
             for(int j = 0; j < packetSize; j++){
                 //add code for out of bounds of data when copying to temp
                 temp[j] = dataNew[(i*packetSize) + j];
             }
-            System.out.println("Offset: " + i + "\tSize: " + packetSize);
-            packetsOut[i] = new DatagramPacket(temp, i, packetSize);
+            this.includeHeaderLines(temp, i);
+            packetsOut[i] = new DatagramPacket(temp, packetSize);
         }
         return packetsOut;
     }
@@ -70,5 +69,21 @@ public class SegmentationImpl implements ISegmentation {
             }
         }
         return bytesOut;
+    }
+
+    public int calculateChecksum(byte[] buf) {
+        int sum = 0;
+        for (byte b : buf) {
+            sum += (int) b;
+        }
+        return sum;
+    }
+    // adds checksum and sequence number to data buffer
+    public byte[] includeHeaderLines(byte[] buf, int sequenceNumber) {
+        String str = new String(buf);
+        str = "Checksum: " + this.calculateChecksum(buf)+ "\r\n"
+                + "Sequence Number: " + sequenceNumber +"\r\n\r\n"
+                + str;
+        return str.getBytes();
     }
 }

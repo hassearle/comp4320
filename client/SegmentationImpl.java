@@ -1,4 +1,4 @@
-package server;
+package client;
 import java.net.DatagramPacket;
 public class SegmentationImpl implements ISegmentation {
     // accepts data in bytes, converts into equally sized packets
@@ -47,7 +47,8 @@ public class SegmentationImpl implements ISegmentation {
                 //add code for out of bounds of data when copying to temp
                 temp[j] = dataNew[(i*packetSize) + j];
             }
-            packetsOut[i] = new DatagramPacket(temp, i, packetSize);
+            this.includeHeaderLines(temp, i);
+            packetsOut[i] = new DatagramPacket(temp, packetSize);
         }
         return packetsOut;
     }
@@ -68,5 +69,21 @@ public class SegmentationImpl implements ISegmentation {
             }
         }
         return bytesOut;
+    }
+
+    public int calculateChecksum(byte[] buf) {
+        int sum = 0;
+        for (byte b : buf) {
+            sum += (int) b;
+        }
+        return sum;
+    }
+    // adds checksum and sequence number to data buffer
+    public byte[] includeHeaderLines(byte[] buf, int sequenceNumber) {
+        String str = new String(buf);
+        str = "Checksum: " + this.calculateChecksum(buf)+ "\r\n"
+                + "Sequence Number: " + sequenceNumber +"\r\n\r\n"
+                + str;
+        return str.getBytes();
     }
 }

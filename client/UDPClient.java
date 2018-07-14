@@ -36,5 +36,12 @@ public class UDPClient {
               System.out.println("Packet received from server: " + receivedData);
             } 
       }
-    } 
+    }
+    public int calculateChecksum(byte[] buf) {
+        int sum = 0;
+        for (byte b : buf) {
+            sum += (int) b;
+        }
+        return sum;
+    }
 }
