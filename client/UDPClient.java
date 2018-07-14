@@ -6,10 +6,7 @@ import java.net.*;
 public class UDPClient {
     public static void main(String args[]) throws Exception 
     { 
-      //create input stream
-      BufferedReader inFromUser = 
-        new BufferedReader(new InputStreamReader(System.in)); 
-  
+      
       //create client socket
       DatagramSocket clientSocket = new DatagramSocket(); 
   
@@ -19,26 +16,26 @@ public class UDPClient {
       byte[] sendData = new byte[1024]; 
       byte[] receiveData = new byte[1024]; 
   
-      String sentence = inFromUser.readLine(); 
-      sendData = sentence.getBytes();         
+      sendData = new String("GET TestFile.html HTTP/1.0").getBytes();
 
       //create datagram with data-to-send, length, IP addr, port
       DatagramPacket sendPacket = 
          new DatagramPacket(sendData, sendData.length, IPAddress, 10024);
   
       //send datagram to server
-      clientSocket.send(sendPacket); 
-  
-      DatagramPacket receivePacket = 
-         new DatagramPacket(receiveData, receiveData.length); 
-  
-      //read datafram from server
-      clientSocket.receive(receivePacket); 
-  
-      String modifiedSentence = 
-          new String(receivePacket.getData()); 
-  
-      System.out.println("FROM SERVER:" + modifiedSentence); 
-      clientSocket.close(); 
-      } 
-} 
+      clientSocket.send(sendPacket);
+
+      DatagramPacket receivePacket; 
+      while(true) {
+        receivePacket = new DatagramPacket(receiveData, receiveData.length); 
+        //read datafram from server
+        clientSocket.receive(receivePacket); 
+        String receivedData =
+            new String(receivePacket.getData());
+            if (receivedData.length != 0) {
+              System.out.println("FROM SERVER:" + receivedData);
+            } 
+      }
+      clientSocket.close();
+    } 
+}
