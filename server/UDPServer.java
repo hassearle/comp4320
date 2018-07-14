@@ -39,11 +39,10 @@ public class UDPServer {
                   + "Content-Length: " + sendData.length + "\r\n"
                   + new String(sendData);
               DatagramPacket[] packetsToSend = segmentor.segmentPackets(data.getBytes(), 256);
-              for (DatagramPacket packet : packetsToSend) {
-                System.out.println("Sending packet: " + new String(packet.getData()));
-                packet.setPort(receivePacket.getPort());
-                packet.setAddress(receivePacket.getAddress());
-                serverSocket.send(packet);
+              for (int i = 0; i < packetsToSend.length; i++) {
+                packetsToSend[i].setPort(receivePacket.getPort());
+                packetsToSend[i].setAddress(receivePacket.getAddress());
+                serverSocket.send(packetsToSend[i]);
               }
               break;
             default: System.out.println("Error: Invalid request method " + requestArgs[1]);

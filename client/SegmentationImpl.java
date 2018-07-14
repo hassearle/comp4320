@@ -49,6 +49,7 @@ public class SegmentationImpl implements ISegmentation {
             }
             this.includeHeaderLines(temp, i);
             packetsOut[i] = new DatagramPacket(temp, packetSize);
+            System.out.println("Created segment packet: " + new String(packetsOut[i].getData()));
         }
         return packetsOut;
     }
@@ -84,6 +85,7 @@ public class SegmentationImpl implements ISegmentation {
         str = "Checksum: " + this.calculateChecksum(buf)+ "\r\n"
                 + "Sequence Number: " + sequenceNumber +"\r\n\r\n"
                 + str;
+        System.out.println(str);
         return str.getBytes();
     }
 }

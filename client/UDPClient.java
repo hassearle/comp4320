@@ -33,7 +33,7 @@ public class UDPClient {
         String receivedData =
             new String(receivePacket.getData());
             if (receivedData.length() != 0) {
-              System.out.println("Packet received from server: " + receivedData);
+              System.out.println("\n\nPacket received from server: " + receivedData);
             } 
       }
     }
