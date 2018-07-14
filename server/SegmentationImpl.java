@@ -47,9 +47,8 @@ public class SegmentationImpl implements ISegmentation {
                 //add code for out of bounds of data when copying to temp
                 temp[j] = dataNew[(i*packetSize) + j];
             }
-            temp = this.includeHeaderLines(temp, i);
-            packetsOut[i] = new DatagramPacket(temp, temp.length);
-            System.out.println(new String(packetsOut[i].getData()));
+            byte[] temp2 = includeHeaderLines(temp, i);
+            packetsOut[i] = new DatagramPacket(temp2, temp2.length);
         }
         return packetsOut;
     }
@@ -72,7 +71,7 @@ public class SegmentationImpl implements ISegmentation {
         return bytesOut;
     }
 
-    public int calculateChecksum(byte[] buf) {
+    public static int calculateChecksum(byte[] buf) {
         int sum = 0;
         for (byte b : buf) {
             sum += (int) b;
@@ -80,12 +79,12 @@ public class SegmentationImpl implements ISegmentation {
         return sum;
     }
     // adds checksum and sequence number to data buffer
-    public byte[] includeHeaderLines(byte[] buf, int sequenceNumber) {
+    public static byte[] includeHeaderLines(byte[] buf, int sequenceNumber) {
 
         String str = new String(buf);
-        str = "Checksum: " + this.calculateChecksum(buf)+ "\r\n"
-                + "Sequence Number: " + sequenceNumber +"\r\n\r\n"
+        String payload = "Checksum: " + calculateChecksum(buf) + "\r\n"
+                + "Sequence Number: " + sequenceNumber + "\r\n\r\n"
                 + str;
-        return str.getBytes();
+        return payload.getBytes();
     }
 }

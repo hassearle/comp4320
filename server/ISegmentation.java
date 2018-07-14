@@ -5,6 +5,6 @@ public interface ISegmentation {
 	DatagramPacket[] segmentPackets(byte[] data, int packetSize);
 	//accepts an array of packets and reassembles them into a byte array
 	byte[] reassemblePackets(DatagramPacket[] packets, int packetSize);
-	int calculateChecksum(byte[] buf);
-	public byte[] includeHeaderLines(byte[] buf, int sequenceNumber);
+	//int calculateChecksum(byte[] buf);
+	//public byte[] includeHeaderLines(byte[] buf, int sequenceNumber);
 }

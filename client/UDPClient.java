@@ -27,14 +27,15 @@ public class UDPClient {
       System.out.println("Client sent HTTP request");
       DatagramPacket receivePacket; 
       while(true) {
-        receivePacket = new DatagramPacket(receiveData, receiveData.length); 
+        receivePacket = new DatagramPacket(receiveData, receiveData.length);
         //read datafram from server
-        clientSocket.receive(receivePacket); 
+        clientSocket.receive(receivePacket);
         String receivedData =
             new String(receivePacket.getData());
             if (receivedData.length() != 0) {
               System.out.println("\n\nPacket received from server: " + receivedData);
-            } 
+              // PACKET PROCESSING HERE
+            }
       }
     }
     public int calculateChecksum(byte[] buf) {
