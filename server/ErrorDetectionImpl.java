@@ -1,5 +1,5 @@
 package server;
-        import java.net.DatagramPacket;
+import java.net.DatagramPacket;
 public class ErrorDetectionImpl implements IErrorDetection {
     // checks the validity of a packet given a hash/checksum
     public boolean detectErrors(DatagramPacket packet) {
@@ -14,7 +14,7 @@ public class ErrorDetectionImpl implements IErrorDetection {
             for (byte b : payload.getBytes()) {
                 sum += (int) b;
             }
-            System.out.println("Calculated checksum: " + checksum);
+            System.out.println("Calculated checksum: " + sum);
             return sum == checksum;
         } catch (Exception e) {
             return false;

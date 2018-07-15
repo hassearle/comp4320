@@ -14,7 +14,7 @@ public class ErrorDetectionImpl implements IErrorDetection {
             for (byte b : payload.getBytes()) {
                 sum += (int) b;
             }
-            System.out.println("Calculated checksum: " + checksum);
+            System.out.println("Calculated checksum: " + sum);
             return sum == checksum;
         } catch (Exception e) {
             return false;
