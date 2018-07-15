@@ -25,9 +25,11 @@ public class UDPClient {
       //send datagram to server
       clientSocket.send(sendPacket);
       System.out.println("Client sent HTTP request");
-      DatagramPacket receivePacket; 
+      DatagramPacket receivePacket, corruptedPacket; 
+      boolean isCorrupt = false;
       while(true) {
         receivePacket = new DatagramPacket(receiveData, receiveData.length);
+
         //read datafram from server
         clientSocket.receive(receivePacket);
         String receivedData =
@@ -35,6 +37,9 @@ public class UDPClient {
             if (receivedData.length() != 0) {
               System.out.println("\n\nPacket received from server: " + receivedData);
               // PACKET PROCESSING HERE
+              corruptedPacket = corruptPackets(receivePacket, .3);
+              isCorrupt = !detectErrors(corruptedPacket);
+              System.out.println("Error detected in packet");
             }
       }
     }
