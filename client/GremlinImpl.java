@@ -38,14 +38,13 @@ public class GremlinImpl implements IGremlin {
       }                
       return packet;
    }
-   
    public boolean recursCorrupt(float[] cArr, float count, DatagramPacket packet){
       if(count <= 0){                        //base case: when count is 0
          return true;
       }
       else{
          Random rand = new Random();
-         int n = rand.nextInt((256)+1);      //rand # gen, picks rand byte
+         int n = rand.nextInt((256));      //rand # gen, picks rand byte
          if(cArr[n] == 0){
             //corrupts the bit////
             byte[] bite = packet.getData();  //gets byte[] from packet

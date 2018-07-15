@@ -1,6 +1,8 @@
 package server;
 import java.net.DatagramPacket;
 public class SegmentationImpl implements ISegmentation {
+
+
     // accepts data in bytes, converts into equally sized packets
     public DatagramPacket[] segmentPackets(byte[] data, int packetSize) {
         /* Calculate the number of empty items there will be in the new array
@@ -53,25 +55,15 @@ public class SegmentationImpl implements ISegmentation {
         return packetsOut;
     }
     //accepts an array of packets and reassembles them into a byte array
-    public byte[] reassemblePackets(DatagramPacket[] packets, int packetSize) {
-        // code here
-        DatagramPacket[] packetsNew = new DatagramPacket[packets.length];
-        for(int i = 0; i < packetsNew.length; i++){
-            packetsNew[packets[i].getOffset()] = packets[i];
-        }
-
-        byte[] bytesOut = new byte[packetsNew.length * packetSize];
-        byte[] temp;
-        for(int i = 0; i < packetsNew.length; i++){
-            temp = packetsNew[i].getData();
-            for(int j = 0; j < packetSize; j++){
-                bytesOut[(i * packetsNew.length) + j] = temp[j];
-            }
-        }
-        return bytesOut;
+    public byte[] reassemblePackets(DatagramPacket packet, int packetSize) {
+        String data = new String(packet.getData());
+        String[] headerLinesAndData = data.split("\r\n\r\n");
+        String[] headers = headerLinesAndData[0].split("\r\n");
+        int sequenceNumber = Integer.parseInt(headers[1].split(" ")[1]);
+        return new byte[1];
     }
 
-    public static int calculateChecksum(byte[] buf) {
+    public int calculateChecksum(byte[] buf) {
         int sum = 0;
         for (byte b : buf) {
             sum += (int) b;
@@ -79,7 +71,7 @@ public class SegmentationImpl implements ISegmentation {
         return sum;
     }
     // adds checksum and sequence number to data buffer
-    public static byte[] includeHeaderLines(byte[] buf, int sequenceNumber) {
+    public byte[] includeHeaderLines(byte[] buf, int sequenceNumber) {
 
         String str = new String(buf);
         String payload = "Checksum: " + calculateChecksum(buf) + "\r\n"

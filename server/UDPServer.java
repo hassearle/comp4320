@@ -44,6 +44,13 @@ public class UDPServer {
                 packetsToSend[i].setAddress(receivePacket.getAddress());
                 serverSocket.send(packetsToSend[i]);
               }
+              // send final packet indicating the message has all been sent
+              DatagramPacket finalPacket = new DatagramPacket(new byte[1], 1, receivePacket.getAddress(), receivePacket.getPort());
+              byte[] buf = segmentor.includeHeaderLines(finalPacket.getData(), packetsToSend.length);
+              finalPacket.setData(buf);
+              finalPacket.setLength(buf.length);
+              serverSocket.send(finalPacket);
+              System.out.println("Final packet: " + new String(finalPacket.getData()));
               break;
             default: System.out.println("Error: Invalid request method " + requestArgs[1]);
               break;

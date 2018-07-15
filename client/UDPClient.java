@@ -27,6 +27,8 @@ public class UDPClient {
       System.out.println("Client sent HTTP request");
       DatagramPacket receivePacket, corruptedPacket; 
       boolean isCorrupt = false;
+      IErrorDetection errorDetector = new ErrorDetectionImpl();
+      IGremlin gremlin = new GremlinImpl();
       while(true) {
         receivePacket = new DatagramPacket(receiveData, receiveData.length);
 
@@ -37,9 +39,11 @@ public class UDPClient {
             if (receivedData.length() != 0) {
               System.out.println("\n\nPacket received from server: " + receivedData);
               // PACKET PROCESSING HERE
-              corruptedPacket = corruptPackets(receivePacket, .3);
-              isCorrupt = !detectErrors(corruptedPacket);
-              System.out.println("Error detected in packet");
+              corruptedPacket = gremlin.corruptPackets(receivePacket, Float.parseFloat(args[0]));
+              isCorrupt = errorDetector.detectErrors(corruptedPacket);
+              if (isCorrupt) {
+                  System.out.println("Error detected in packet");
+              }
             }
       }
     }
