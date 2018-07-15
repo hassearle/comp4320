@@ -4,6 +4,9 @@ import java.util.Random;
 
 public class GremlinImpl implements IGremlin {
    // corrupts a packet if the provided probability is met
+   GremlinImpl() {
+      
+   }
    public DatagramPacket corruptPackets(DatagramPacket packet, float probability) {
       
       float corruptArr[] = new float[pcktSz];      //arr of packet length

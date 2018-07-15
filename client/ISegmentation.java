@@ -6,5 +6,7 @@ public interface ISegmentation {
 	//accepts an array of packets and reassembles them into a byte array
 	byte[] reassemblePackets(DatagramPacket[] packets, int packetSize);
 	int calculateChecksum(byte[] buf);
-	public byte[] includeHeaderLines(byte[] buf, int sequenceNumber);
+	public byte[] includeHeaderLines(byte[] buf, int sequenceNumber); public boolean checkAllArrived(DatagramPacket[] packets, int highestNumber);
+    public boolean checkNullArrived(DatagramPacket packet);
+    public int highestSequenceCheck(DatagramPacket[] packets);
 }

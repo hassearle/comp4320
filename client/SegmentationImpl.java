@@ -1,6 +1,8 @@
 package client;
 import java.net.DatagramPacket;
 public class SegmentationImpl implements ISegmentation {
+    SegmentationImpl(){
+    }
     // accepts data in bytes, converts into equally sized packets
     public DatagramPacket[] segmentPackets(byte[] data, int packetSize) {
         /* Calculate the number of empty items there will be in the new array
@@ -72,6 +74,27 @@ public class SegmentationImpl implements ISegmentation {
         return bytesOut;
     }
 
+    public boolean checkAllArrived(DatagramPacket[] packets, int highestNumber) {
+        return packets.length == highestNumber + 1;
+    }
+
+    public boolean checkNullArrived(DatagramPacket packet){
+        if(packet.getData().length == 1 && packet.getData()[1] == 0) {
+            return true;
+        }
+        return false;
+    }
+
+    public int highestSequenceCheck(DatagramPacket[] packets){
+        int highestSequence = 0;
+        for(DatagramPacket packet : packets) {
+            if(highestSequence < checkSequenceNumber(packet)){
+                highestSequence = checkSequenceNumber(packet);
+            }
+        }
+        return highestSequence;
+    }
+
     public int calculateChecksum(byte[] buf) {
         int sum = 0;
         for (byte b : buf) {
@@ -87,5 +110,14 @@ public class SegmentationImpl implements ISegmentation {
                 + str;
         System.out.println(str);
         return str.getBytes();
+    }
+
+    public int checkSequenceNumber(DatagramPacket packet) {
+        String data = new String(packet.getData());
+        String[] headerLinesAndData = data.split("\r\n\r\n");
+        String[] headers = headerLinesAndData[0].split("\r\n");
+        int sequenceNumber = Integer.parseInt(headers[1].split(" ")[1]);
+
+        return sequenceNumber;
     }
 }
