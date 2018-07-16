@@ -28,6 +28,11 @@ public static final String FILE_NAME = "TestFile.html";
       //create datagram with data-to-send, length, IP addr, port
       DatagramPacket sendPacket = 
          new DatagramPacket(sendData, sendData.length, IPAddress, 10024);
+      DatagramPacket gremlinedPacket;
+
+      boolean isCorrupt = false;
+      int count = 0, countError = 0;
+      double ratio = 0;
   
       //send datagram to server
       clientSocket.send(sendPacket);
@@ -43,6 +48,17 @@ public static final String FILE_NAME = "TestFile.html";
         if (receivedData.length() != 0) {
           assembler.newPacketIn(receivePacket);
         }
+
+        gremlinedPacket = gremlin.corruptPackets(receivePacket, probabilityOfError);
+        isCorrupt = errorDetec.detectErrors(receivePacket);
+        count++;
+
+        if(isCorrupt){
+          System.out.println("Packet error occured.");
+        }
+        ratio = (double)countError/(double)count;
+        System.out.println("Percentage of errors is: " + ratio);
+
 
       }
       writeDataToFile(assembler.getAssembledDocument(), FILE_NAME);
