@@ -12,6 +12,6 @@ comp4320_proj1
 # Compiling & running (server)
 	1. Make sure you're on tux055
 	2. Create directory server_out
-	3. execute ```javac -d server_out client/*```
+	3. execute ```javac -d server_out server/*```
 	4. navigate into server_out directory
-	5. execute ```java server.UDPClient```
+	5. execute ```java server.UDPServer```
