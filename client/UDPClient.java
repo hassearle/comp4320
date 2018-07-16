@@ -3,8 +3,9 @@ package client;
 import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
-
+import java.nio.file.Files;
 public class UDPClient {
+public static final String FILE_NAME = "TestFile.html";
     public static void main(String args[]) throws Exception 
     { 
       
@@ -15,59 +16,36 @@ public class UDPClient {
       InetAddress IPAddress = InetAddress.getByName("tux055");
   
       byte[] sendData = new byte[1024]; 
-      byte[] receiveData = new byte[1024]; 
+
+      IGremlin gremlin = new GremlinImpl();
+      IErrorDetection errorDetec = new ErrorDetectionImpl();
+      IAssembler assembler = new AssemblerImpl();
+
+      float probabilityOfError = Integer.parseInt(args[0]);
   
-      sendData = new String("GET TestFile.html HTTP/1.0").getBytes();
+      sendData = new String("GET " + FILE_NAME + " HTTP/1.0").getBytes();
 
       //create datagram with data-to-send, length, IP addr, port
       DatagramPacket sendPacket = 
          new DatagramPacket(sendData, sendData.length, IPAddress, 10024);
   
       //send datagram to server
-      IGremlin gremlin = new GremlinImpl();
-      IErrorDetection errorDetec = new ErrorDetectionImpl();
-      ISegmentation segmentation = new SegmentationImpl();
-      float probabilityOfError = 0.3f;
-      int highestSequenceReceived;
       clientSocket.send(sendPacket);
       System.out.println("Client sent HTTP request");
-      DatagramPacket receivePacket, corruptedPacket; 
-      ArrayList<DatagramPacket> packets = new ArrayList<DatagramPacket>();
-      DatagramPacket[] packetsArr = new DatagramPacket[1];
-      boolean isCorrupt = false, nullArrived = false, allArrived = false;
-      while(!allArrived && !nullArrived) {
-        receivePacket = new DatagramPacket(receiveData, receiveData.length);
 
-        //read datafram from server
+      //prepare to receive packets 
+      while(!assembler.isComplete()) {
+        byte[] receiveData = new byte[1024];
+        DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
+        //read datagram from server
         clientSocket.receive(receivePacket);
-        String receivedData =
-            new String(receivePacket.getData());
+        String receivedData = new String(receivePacket.getData());
         if (receivedData.length() != 0) {
-          System.out.println("\n\nPacket received from server: " + receivedData);
-          // PACKET PROCESSING HERE
-          corruptedPacket = gremlin.corruptPackets(receivePacket, probabilityOfError);
-          isCorrupt = !errorDetec.detectErrors(corruptedPacket);
-          if(isCorrupt) {
-            System.out.println("Error detected in packet");
-          }
-
-          packets.add(receivePacket);
-          packetsArr = new DatagramPacket[packets.size()];
-          for(int i = 0; i < packets.size(); i++){
-            packetsArr[i] = packets.get(i);
-          }
-          highestSequenceReceived = segmentation.highestSequenceCheck(packetsArr);
-
-          if(segmentation.checkNullArrived(receivePacket)){
-            nullArrived = true;
-          }
-          if(segmentation.checkAllArrived(packetsArr, highestSequenceReceived)){
-            allArrived = true;
-          }
+          assembler.newPacketIn(receivePacket);
         }
-        segmentation.reassemblePackets(packetsArr, packetsArr.length);
 
       }
+      writeDataToFile(assembler.getAssembledDocument(), FILE_NAME);
     }
 
 
@@ -78,5 +56,16 @@ public class UDPClient {
             sum += (int) b;
         }
         return sum;
+    }
+
+    public static boolean writeDataToFile(byte[] data, String fileName) {
+        try {
+            File file = new File(fileName);
+            Files.write(file, data);
+            System.out.println("Wrote data to " + FILE_NAME);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 }

@@ -1,15 +1,17 @@
 package client;
 import java.net.DatagramPacket;
 public class ErrorDetectionImpl implements IErrorDetection {
-    ErrorDetectionImpl() {
-    }
     // checks the validity of a packet given a hash/checksum
+    ErrorDetectionImpl() {
+        this.numberOfCorruptedPackets = 0;
+    }
+    public int numberOfCorruptedPackets;
     public boolean detectErrors(DatagramPacket packet) {
         try {
             String data = new String(packet.getData());
-            String[] headerLinesAndData = data.split("\r\n\r\n");
-            String[] headers = headerLinesAndData[0].split("\r\n");
-            String payload = headerLinesAndData[1];
+            String[] headers = data.split("\r\n\r\n")[0].split("\r\n");
+            String payload = data.substring(data.indexOf("\r\n\r\n") + 4);
+            System.out.println("\nPAYLOAD: " + payload);
             int checksum = Integer.parseInt(headers[0].split(" ")[1]);
             System.out.println("Parsed checksum: " + checksum);
             int sum = 0;
@@ -17,8 +19,14 @@ public class ErrorDetectionImpl implements IErrorDetection {
                 sum += (int) b;
             }
             System.out.println("Calculated checksum: " + sum);
-            return sum == checksum;
+            if(sum == checksum) {
+                return true;
+            } else {
+                numberOfCorruptedPackets++;
+                return false;
+            }
         } catch (Exception e) {
+            numberOfCorruptedPackets++;
             return false;
         }
     }

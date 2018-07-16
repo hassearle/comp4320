@@ -1,12 +1,14 @@
 package server;
 import java.net.DatagramPacket;
+import java.util.ArrayList;
+
 public class SegmentationImpl implements ISegmentation {
-
-
+    SegmentationImpl(){
+    }
     // accepts data in bytes, converts into equally sized packets
     public DatagramPacket[] segmentPackets(byte[] data, int packetSize) {
         /* Calculate the number of empty items there will be in the new array
-         * if necessary where the new array is a size that is a multiple
+         * if necessary where the new array is a size that is a multiple 
          * of packetSize
          */
         int remainingItems = 0;
@@ -28,11 +30,8 @@ public class SegmentationImpl implements ISegmentation {
         }
 
         int numberOfPackets = dataNew.length / packetSize;
-        //if(data.length % packetSize != 0) {
-        //    numberOfPackets++;
-        //}
 
-        /* Create new DatagramPacket array, packetsOut, that will be
+        /* Create new DatagramPacket aray, packetsOut, that will be
          * returned by the function. Create a new byte array, temp,
          * that will record the byte arrays stored in the packetOut.
          */
@@ -49,20 +48,13 @@ public class SegmentationImpl implements ISegmentation {
                 //add code for out of bounds of data when copying to temp
                 temp[j] = dataNew[(i*packetSize) + j];
             }
-            byte[] temp2 = includeHeaderLines(temp, i);
-            packetsOut[i] = new DatagramPacket(temp2, temp2.length);
+            this.includeHeaderLines(temp, i);
+            packetsOut[i] = new DatagramPacket(temp, packetSize);
+            System.out.println("Created segment packet: " + new String(packetsOut[i].getData()));
         }
         return packetsOut;
     }
-    //accepts an array of packets and reassembles them into a byte array
-    public byte[] reassemblePackets(DatagramPacket packet, int packetSize) {
-        String data = new String(packet.getData());
-        String[] headerLinesAndData = data.split("\r\n\r\n");
-        String[] headers = headerLinesAndData[0].split("\r\n");
-        int sequenceNumber = Integer.parseInt(headers[1].split(" ")[1]);
-        return new byte[1];
-    }
-
+    
     public int calculateChecksum(byte[] buf) {
         int sum = 0;
         for (byte b : buf) {
@@ -72,11 +64,12 @@ public class SegmentationImpl implements ISegmentation {
     }
     // adds checksum and sequence number to data buffer
     public byte[] includeHeaderLines(byte[] buf, int sequenceNumber) {
-
         String str = new String(buf);
-        String payload = "Checksum: " + calculateChecksum(buf) + "\r\n"
-                + "Sequence Number: " + sequenceNumber + "\r\n\r\n"
+        str = "Checksum: " + this.calculateChecksum(buf)+ "\r\n"
+                + "Sequence Number: " + sequenceNumber +"\r\n\r\n"
                 + str;
-        return payload.getBytes();
+        System.out.println(str);
+        return str.getBytes();
     }
+
 }

@@ -36,13 +36,14 @@ public class UDPServer {
               ISegmentation segmentor = new SegmentationImpl();
               String data = "HTTP/1.0 200 Document Follows\r\n"
                   + "Content-Type: text/plain\r\n"
-                  + "Content-Length: " + sendData.length + "\r\n"
+                  + "Content-Length: " + sendData.length + "\r\n\r\n"
                   + new String(sendData);
               DatagramPacket[] packetsToSend = segmentor.segmentPackets(data.getBytes(), 256);
               for (int i = 0; i < packetsToSend.length; i++) {
                 packetsToSend[i].setPort(receivePacket.getPort());
                 packetsToSend[i].setAddress(receivePacket.getAddress());
                 serverSocket.send(packetsToSend[i]);
+                System.out.println("Submitting packet");
               }
               // send final packet indicating the message has all been sent
               DatagramPacket finalPacket = new DatagramPacket(new byte[1], 1, receivePacket.getAddress(), receivePacket.getPort());
@@ -50,7 +51,7 @@ public class UDPServer {
               finalPacket.setData(buf);
               finalPacket.setLength(buf.length);
               serverSocket.send(finalPacket);
-              System.out.println("Final packet: " + new String(finalPacket.getData()));
+              System.out.println("Finished transmitting " + requestArgs[1]);
               break;
             default: System.out.println("Error: Invalid request method " + requestArgs[1]);
               break;

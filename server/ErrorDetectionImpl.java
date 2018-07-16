@@ -8,6 +8,7 @@ public class ErrorDetectionImpl implements IErrorDetection {
             String[] headerLinesAndData = data.split("\r\n\r\n");
             String[] headers = headerLinesAndData[0].split("\r\n");
             String payload = headerLinesAndData[1];
+            System.out.println("PAYLOAD: " + payload);
             int checksum = Integer.parseInt(headers[0].split(" ")[1]);
             System.out.println("Parsed checksum: " + checksum);
             int sum = 0;
