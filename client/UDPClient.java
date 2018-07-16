@@ -21,7 +21,7 @@ public static final String FILE_NAME = "TestFile.html";
       IErrorDetection errorDetec = new ErrorDetectionImpl();
       IAssembler assembler = new AssemblerImpl();
 
-      float probabilityOfError = Integer.parseInt(args[0]);
+      float probabilityOfError = Float.parseFloat(args[0]);
   
       sendData = new String("GET " + FILE_NAME + " HTTP/1.0").getBytes();
 
@@ -29,28 +29,10 @@ public static final String FILE_NAME = "TestFile.html";
       DatagramPacket sendPacket = 
          new DatagramPacket(sendData, sendData.length, IPAddress, 10024);
   
+
       //send datagram to server
-<<<<<<< HEAD
       clientSocket.send(sendPacket);
-      System.out.println("Client sent HTTP request");
-=======
-      IGremlin gremlin = new GremlinImpl();
-      IErrorDetection errorDetec = new ErrorDetectionImpl();
-      ISegmentation segmentation = new SegmentationImpl();
-      float probabilityOfError = 0.3f;
-      ArrayList<byte> dataWriteToFile = new ArrayList<byte>;
-      byte[] dataWriteToFileArr = new byte[1];
-      int highestSequenceReceived;
-      clientSocket.send(sendPacket);
-      System.out.println("Client sent HTTP request");
-      DatagramPacket receivePacket, corruptedPacket; 
-      ArrayList<DatagramPacket> packets = new ArrayList<DatagramPacket>();
-      DatagramPacket[] packetsArr = new DatagramPacket[1],
-        reassemblePacketsArr = new DatagramPacket[1];
-      boolean isCorrupt = false, nullArrived = false, allArrived = false;
-      while(!allArrived && !nullArrived) {
-        receivePacket = new DatagramPacket(receiveData, receiveData.length);
-      //prepare to receive packets 
+      System.out.println("Client sent HTTP request");;//prepare to receive packets 
       while(!assembler.isComplete()) {
         byte[] receiveData = new byte[1024];
         DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
@@ -63,8 +45,6 @@ public static final String FILE_NAME = "TestFile.html";
       }
       writeDataToFile(assembler.getAssembledDocument(), FILE_NAME);
     }
-
-
     
     public int calculateChecksum(byte[] buf) {
         int sum = 0;
@@ -73,18 +53,13 @@ public static final String FILE_NAME = "TestFile.html";
         }
         return sum;
     }
-    public static boolean writeDataToFile(byte[] data, String fileName) {
-        try {
-            File file = new File(fileName);
-            Files.write(file, data);
-            System.out.println("Wrote data to " + FILE_NAME);
-=======
+
     public boolean writeDataToFile(byte[] data, String fileName) {
         try {
             File file = new File(fileName);
             FileOutputStream fos = new FileOutputStream(file);
             fos.write(data);
->>>>>>> 378ca4a9b61d295510407e1076428450046e5c0c
+            System.out.println("Wrote data to " + FILE_NAME);
             return true;
         } catch (Exception e) {
             return false;
