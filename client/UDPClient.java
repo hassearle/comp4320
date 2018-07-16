@@ -52,7 +52,10 @@ public class UDPClient {
           }
 
           packets.add(receivePacket);
-          packetsArr = (DatagramPacket[])packets.toArray();
+          packetsArr = new DatagramPacket[packets.size()];
+          for(int i = 0; i < packets.size(); i++){
+            packetsArr[i] = packets.get(i);
+          }
           highestSequenceReceived = segmentation.highestSequenceCheck(packetsArr);
 
           if(segmentation.checkNullArrived(receivePacket)){
