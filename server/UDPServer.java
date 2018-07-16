@@ -7,7 +7,7 @@ import java.nio.file.Files;
 public class UDPServer {
   public static void main(String args[]) throws Exception 
     { 
-      //create datagram socket at port 9876
+      //create datagram socket at port 10025
       DatagramSocket serverSocket = new DatagramSocket(10024);
   
       byte[] receiveData = new byte[1024]; 

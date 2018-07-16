@@ -48,8 +48,8 @@ public class SegmentationImpl implements ISegmentation {
                 //add code for out of bounds of data when copying to temp
                 temp[j] = dataNew[(i*packetSize) + j];
             }
-            this.includeHeaderLines(temp, i);
-            packetsOut[i] = new DatagramPacket(temp, packetSize);
+            byte[] dataWithHeaders = this.includeHeaderLines(temp, i);
+            packetsOut[i] = new DatagramPacket(dataWithHeaders, dataWithHeaders.length);
             System.out.println("Created segment packet: " + new String(packetsOut[i].getData()));
         }
         return packetsOut;
