@@ -27,7 +27,7 @@ public static final String FILE_NAME = "TestFile.html";
 
       //create datagram with data-to-send, length, IP addr, port
       DatagramPacket sendPacket = 
-         new DatagramPacket(sendData, sendData.length, IPAddress, 10024);
+         new DatagramPacket(sendData, sendData.length, IPAddress, 10025);
   
       //send datagram to server
       clientSocket.send(sendPacket);
@@ -43,7 +43,6 @@ public static final String FILE_NAME = "TestFile.html";
         if (receivedData.length() != 0) {
           assembler.newPacketIn(receivePacket);
         }
-
       }
       writeDataToFile(assembler.getAssembledDocument(), FILE_NAME);
     }
@@ -59,9 +58,12 @@ public static final String FILE_NAME = "TestFile.html";
     }
 
     public static boolean writeDataToFile(byte[] data, String fileName) {
+      System.out.println(new String(data) + ">>>>>>>>>>>>>>>");
         try {
-            File file = new File(fileName);
-            Files.write(file.toPath(), data);
+            PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(fileName)));
+            out.print(new String(data));
+            out.flush();
+            out.close();
             System.out.println("Wrote data to " + FILE_NAME);
             return true;
         } catch (Exception e) {
