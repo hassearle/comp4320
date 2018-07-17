@@ -21,7 +21,7 @@ public static final String FILE_NAME = "TestFile.html";
       IErrorDetection errorDetec = new ErrorDetectionImpl();
       IAssembler assembler = new AssemblerImpl();
 
-      float probabilityOfError = Integer.parseInt(args[0]);
+      float probabilityOfError = Float.parseFloat(args[0]);
   
       sendData = new String("GET " + FILE_NAME + " HTTP/1.0").getBytes();
 
