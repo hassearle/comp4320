@@ -29,11 +29,8 @@ public static final String FILE_NAME = "TestFile.html";
       DatagramPacket sendPacket = 
          new DatagramPacket(sendData, sendData.length, IPAddress, 10024);
       DatagramPacket gremlinedPacket;
-
       boolean isCorrupt = false;
-      double count = 0, countError = 0;
-      double ratio = 0;
-  
+
       //send datagram to server
       clientSocket.send(sendPacket);
       System.out.println("Client sent HTTP request");
@@ -52,24 +49,14 @@ public static final String FILE_NAME = "TestFile.html";
         isCorrupt = false;
         gremlinedPacket = gremlin.corruptPackets(receivePacket, probabilityOfError);
         isCorrupt = errorDetec.detectErrors(gremlinedPacket);
-        count++;
 
         if(isCorrupt){
           System.out.println("Packet error occured.");
-          countError++;
-          System.out.println("count = " + count);
-          System.out.println("countError = " + countError);
         }
-        ratio = countError/count;
-        System.out.println("Percentage of errors is: " + ratio);
-
-
       }
       writeDataToFile(assembler.getAssembledDocument(), FILE_NAME);
     }
 
-
-    
     public int calculateChecksum(byte[] buf) {
         int sum = 0;
         for (byte b : buf) {
