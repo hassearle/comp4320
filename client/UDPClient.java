@@ -21,7 +21,7 @@ public static final String FILE_NAME = "TestFile.html";
       IErrorDetection errorDetec = new ErrorDetectionImpl();
       IAssembler assembler = new AssemblerImpl();
 
-      float probabilityOfError = Integer.parseInt(args[0]);
+      float probabilityOfError = Float.parseFloat(args[0]);
   
       sendData = new String("GET " + FILE_NAME + " HTTP/1.0").getBytes();
 
@@ -31,7 +31,7 @@ public static final String FILE_NAME = "TestFile.html";
       DatagramPacket gremlinedPacket;
 
       boolean isCorrupt = false;
-      int count = 0, countError = 0;
+      double count = 0, countError = 0;
       double ratio = 0;
   
       //send datagram to server
@@ -49,14 +49,18 @@ public static final String FILE_NAME = "TestFile.html";
           assembler.newPacketIn(receivePacket);
         }
 
+        isCorrupt = false;
         gremlinedPacket = gremlin.corruptPackets(receivePacket, probabilityOfError);
-        isCorrupt = errorDetec.detectErrors(receivePacket);
+        isCorrupt = errorDetec.detectErrors(gremlinedPacket);
         count++;
 
         if(isCorrupt){
           System.out.println("Packet error occured.");
+          countError++;
+          System.out.println("count = " + count);
+          System.out.println("countError = " + countError);
         }
-        ratio = (double)countError/(double)count;
+        ratio = countError/count;
         System.out.println("Percentage of errors is: " + ratio);
 
 
@@ -75,9 +79,12 @@ public static final String FILE_NAME = "TestFile.html";
     }
 
     public static boolean writeDataToFile(byte[] data, String fileName) {
+      System.out.println(new String(data) + ">>>>>>>>>>>>>>>");
         try {
-            File file = new File(fileName);
-            Files.write(file.toPath(), data);
+            PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(fileName)));
+            out.print(new String(data));
+            out.flush();
+            out.close();
             System.out.println("Wrote data to " + FILE_NAME);
             return true;
         } catch (Exception e) {

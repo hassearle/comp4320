@@ -28,6 +28,7 @@ public class AssemblerImpl implements IAssembler {
 		String document = "";
 		this.receivedPackets.sort(this.packetComparator);
 		for (DatagramPacket packet : receivedPackets) {
+			document += getPayload(packet);
 			System.out.println(getPayload(packet)); 
 		}
 		return document.getBytes();
