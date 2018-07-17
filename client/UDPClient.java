@@ -27,8 +27,10 @@ public static final String FILE_NAME = "TestFile.html";
 
       //create datagram with data-to-send, length, IP addr, port
       DatagramPacket sendPacket = 
-         new DatagramPacket(sendData, sendData.length, IPAddress, 10025);
-  
+         new DatagramPacket(sendData, sendData.length, IPAddress, 10024);
+      DatagramPacket gremlinedPacket;
+      boolean isCorrupt = false;
+
       //send datagram to server
       clientSocket.send(sendPacket);
       System.out.println("Client sent HTTP request");
@@ -43,12 +45,18 @@ public static final String FILE_NAME = "TestFile.html";
         if (receivedData.length() != 0) {
           assembler.newPacketIn(receivePacket);
         }
+
+        isCorrupt = false;
+        gremlinedPacket = gremlin.corruptPackets(receivePacket, probabilityOfError);
+        isCorrupt = errorDetec.detectErrors(gremlinedPacket);
+
+        if(isCorrupt){
+          System.out.println("Packet error occured.");
+        }
       }
       writeDataToFile(assembler.getAssembledDocument(), FILE_NAME);
     }
 
-
-    
     public int calculateChecksum(byte[] buf) {
         int sum = 0;
         for (byte b : buf) {

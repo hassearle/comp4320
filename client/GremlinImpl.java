@@ -3,7 +3,6 @@ import java.net.DatagramPacket;
 import java.util.Random;
 
 public class GremlinImpl implements IGremlin {
-   static double count = 0, count2 = 0, count3 = 0, count4 = 0, count5 = 0, ratio = 0;
    // corrupts a packet if the provided probability is met
    GremlinImpl() {
       
@@ -30,15 +29,7 @@ public class GremlinImpl implements IGremlin {
       .2 = 81-100
       */
 
-      count2++;
-
       if(n_1 >= 0 && n_1 <= prob){                 //if rand is b/w 0-prob
-
-         count3 ++;
-         ratio = count3 / count2;
-         System.out.println("Ran: " + count);
-         System.out.println("RanRatio: " + ratio);
-
          int n_2 = rand.nextInt((100)+1);         
          if(n_2 <= 50){
             recursCorrupt(corruptArr, 1, packet);  //alt 1 byte in packet
